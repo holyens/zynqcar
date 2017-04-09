@@ -1,0 +1,10 @@
+# Cross compiler makefile for my_gpio
+# By Nightmare @ EEFOCUS 2012-10-10
+KERN_SRC=/zedboard/dlinux-v4.4
+MAKE_ARGS=ARCH=arm CROSS_COMPILE=arm-xilinx-linux-gnueabi-
+obj-m :=myspeed.o
+
+all:
+	make -C $(KERN_SRC) $(MAKE_ARGS) M=`pwd` modules
+clean:
+	rm -f *.o *.ko *.mod.c *.symvers *.order *.cmd
