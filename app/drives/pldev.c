@@ -1,20 +1,8 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdio.h>
+#include <libpldev.h>
 #define PL_GPIO		"/dev/pl_mygpio"
 #define PL_PWM		"/dev/pl_mypwm"
 #define PL_SPEED	"/dev/pl_myspeed"
 #define PL_SR04		"/dev/pl_mysr04"
-typedef static{
-	int left;
-	int center;
-	int right;
-}SR04;
-typedef static{
-	int left;
-	int right;
-}SPEED;
 static struct ADJUSTPARA{
 	int pwm_left;
 	int pwm_right;
@@ -99,10 +87,12 @@ int smartcar_speed_set(int period){
 }
 SPEED smartcar_speed_read(){
 	SPEED para;
+	para.ret = 0;
 	int fd = open(PL_SPEED, O_RDWR);
 	if(fd<0){
 		perror("smartcar error:");
-		return -1;
+		para.ret = -1;
+		return para;
 	}
 	para.right = ioctl(fd, 0x11, 0x00);
 	para.left  = ioctl(fd, 0x12, 0x00);
@@ -129,10 +119,12 @@ int smartcar_sr04_set(int period){
 }
 SR04 smartcar_sr04_read(){
 	SR04 para;
+	para.ret = 0;
 	int fd = open(PL_SR04, O_RDWR);
 	if(fd<0){
 		perror("smartcar error:");
-		return -1;
+		para.ret = -1;
+		return para;
 	}
 	para.right = ioctl(fd, 0x01, 0x00)*17/10000;
 	para.center = ioctl(fd, 0x02, 0x00)*17/10000;
